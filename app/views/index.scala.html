@@ -1,0 +1,24 @@
+@import helper._
+
+@main("YTLytics") {
+      <h1  id="main_header">Welcome to YouTube Lytics</h1>
+<p id="tagline"><i>--An Elegant Search Engine And Analyser For YT--</i></p>
+
+<img id="main_image" alt="TYimage" src="@routes.Assets.versioned("images/main_image.webp")" width="300px" height="200px">
+
+<div class="about-container">
+<p id="about">This webpage makes use of the official YouTube API to grab relevant information and provide it to you. The results give you all the informations about a video and its respective channel which includes the title and description along with the information on tags.
+      <br><br>Please make use of the search bar given below to search for videos using relevant terms.</p></div>
+
+<form action="/search" method="get" id="searchForm">
+      <div class="main_form">
+      <div class="search-container">
+            <input type="text" name="searchTerms" class="search-input" placeholder="Enter relevant search terms here">
+            <img alt="search_icon" class="search-icon" src="@routes.Assets.versioned("images/search_icon.webp")">
+      </div>
+      <input type="submit" name="search_button" class="submit-input" value="search!">
+      </div>
+</form>
+
+      <div id="searchResults"></div>
+}
