@@ -23,7 +23,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class HomeController extends Controller {
 
-    private static final String API_KEY = "AIzaSyAugi0_hJ_OgciWZoKLnYybGcZlq4CLJiw";
+    private static final String API_KEY = "";
 
     public Result index() {
         return ok(views.html.index.render());
