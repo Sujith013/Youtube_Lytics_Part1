@@ -26,7 +26,7 @@ import java.util.stream.StreamSupport;
  */
 public class TagController extends Controller {
 
-    private static final String API_KEY = "AIzaSyAugi0_hJ_OgciWZoKLnYybGcZlq4CLJiw";
+    private static final String API_KEY = "";
 
     public Result tagIndex(String videoId) {
         String apiUrl = "https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=" + videoId + "&key=" + API_KEY;

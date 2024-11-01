@@ -1,53 +1,35 @@
-/**
- * @author Sujith Manikandan
- * @author Tharun Balaji
- * @author Thansil Mohamed Syed Hamdulla
- * @author Prakash Yuvaraj
- * @version 1.0
- * @since 01-11-2024
- * */
 package controllers;
 
-import Models.SearchData;
-import Models.VideoData;
-
+import play.api.libs.json.Json;
 import play.mvc.*;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import java.net.URI;
 import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.CompletableFuture;
-
 /**
- * This is the one and only main controller for the project that handles the HTTP requests and renders
- * pages for the entire application.
+ * This controller contains an action to handle HTTP requests
+ * to the application's home page.
  */
 public class HomeController extends Controller {
 
-    //The api key
     private static final String API_KEY = "AIzaSyAugi0_hJ_OgciWZoKLnYybGcZlq4CLJiw";
 
-    /**
-     * @author Sujith Manikandan
-     * @return returns the view of the index page containing the html content for the main page of our application
-     * */
     public Result index() {
         return ok(views.html.index.render());
     }
 
-    /**
-     * @author Sujith Manikandan
-     * @deprecated getQueryString and printStackTrace methods
-     * @param request The http request sent through the fetch API from the client side using javascript for the submission of the search field
-     * @return A wrapped object containing all the data about the search results such as videoID,videoTitle,ChannelTitle,ChannelId,description and url of the thumbnail
-     * */
-    public CompletionStage<Result> submitInput(Http.Request request) {
-        return CompletableFuture.supplyAsync(() -> {
-        //String containing the search query
+    public Result submitInput(Http.Request request) {
         String sT = request.getQueryString("searchTerms");
 
         try {
@@ -56,74 +38,41 @@ public class HomeController extends Controller {
             e.printStackTrace(); // Handle the exception appropriately
         }
 
-        //final url to be passed onto the object
         String apiUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + sT + "&maxResults=20&key=" + API_KEY;
 
-        try
-        {
-            //Maps the list of list of string and returns it back to the client side JS.
-            ObjectMapper objectMapper = new ObjectMapper();
-            SearchData videos = new SearchData(apiUrl);
-            return ok(objectMapper.writeValueAsString(videos.videos));
-        }
-        catch (IOException | InterruptedException e)
-        {
-            e.printStackTrace();
-            return internalServerError("Error fetching YouTube data");
-        }
-        });
-    }
-
-    /**
-     * @author Sujith Manikandan
-     * @deprecated printStackTrace method
-     * @param videoId the id of the video for which the content is required
-     * @return A wrapped object containing all the data about the video such as title,channel,description,thumbnails and tags of the video.
-     * */
-    public CompletionStage<Result>tagIndex(String videoId) {
-        return CompletableFuture.supplyAsync(() -> {
-        //The final search url to be passed onto the api object/client
-        String apiUrl = "https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=" + videoId + "&key=" + API_KEY;
-
         try {
-            //Returns all the information obtained about the video using the id back to the client side JS.
-            VideoData videos = new VideoData(apiUrl);
-            return ok(views.html.tags.render(videoId,videos.videoTitle,videos.channelTitle,videos.description,videos.thumbnail,videos.tagsResponse));
+            // Create an HTTP Client
+            HttpClient client = HttpClient.newHttpClient();
+
+            // Build a GET Request to YouTube API
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(apiUrl))
+                    .GET()
+                    .build();
+
+            // Send the request and get the response
+            HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+            // Parse the response JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonResponse = objectMapper.readTree(response.body());
+
+            List<List<String>> videos = StreamSupport.stream(jsonResponse.get("items").spliterator(), false)
+                    .filter(video -> "youtube#video".equals(video.get("id").get("kind").asText()))
+                    .map(video -> Arrays.asList(video.get("snippet").get("title").asText(),
+                            "https://www.youtube.com/watch?v=" + video.get("id").get("videoId").asText(),
+                            "https://www.youtube.com/@"+video.get("snippet").get("channelTitle").asText(),
+                            video.get("snippet").get("description").asText(),
+                            video.get("snippet").get("thumbnails").get("high").get("url").asText(),
+                            "https://www.youtube.com/channel/"+video.get("snippet").get("channelId").asText()))
+                    .limit(10)
+                    .collect(Collectors.toList());
+
+            // Send the data to the view (HTML template)
+            return ok(objectMapper.writeValueAsString(videos));
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return internalServerError("Error fetching YouTube data");
         }
-        });
-    }
-
-    /**
-     * @author Sujith Manikandan
-     * @deprecated getQueryString and printStackTrace methods
-     * @param request The http request sent through the fetch API from the client side using javascript for the submission of the search field
-     * @return A wrapped object containing all the data about the search results such as videoID,videoTitle,ChannelTitle,ChannelId,description and url of the thumbnail
-     * */
-    public CompletionStage<Result> tagResultIndex(Http.Request request) {
-        return CompletableFuture.supplyAsync(() -> {
-        String sT = request.getQueryString("searchTerm");
-
-        try {
-            sT = URLEncoder.encode(sT, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace(); // Handle the exception appropriately
-        }
-
-        //The final search url to be passed onto the api object/client
-        String apiUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + sT + "&maxResults=20&key=" + API_KEY;
-
-        //Maps all the search data about an object and returns everything back to the client side JS.
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            SearchData videos = new SearchData(apiUrl);
-            return ok(objectMapper.writeValueAsString(videos.videos));
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return internalServerError("Error fetching YouTube data");
-        }
-    });
     }
 }
