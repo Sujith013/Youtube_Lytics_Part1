@@ -41,6 +41,7 @@ public class HomeController extends Controller {
 
     /**
      * @author Sujith Manikandan
+     * @deprecated getQueryString and printStackTrace methods
      * @param request The http request sent through the fetch API from the client side using javascript for the submission of the search field
      * @return A wrapped object containing all the data about the search results such as videoID,videoTitle,ChannelTitle,ChannelId,description and url of the thumbnail
      * */
@@ -75,6 +76,7 @@ public class HomeController extends Controller {
 
     /**
      * @author Sujith Manikandan
+     * @deprecated printStackTrace method
      * @param videoId the id of the video for which the content is required
      * @return A wrapped object containing all the data about the video such as title,channel,description,thumbnails and tags of the video.
      * */
@@ -96,6 +98,7 @@ public class HomeController extends Controller {
 
     /**
      * @author Sujith Manikandan
+     * @deprecated getQueryString and printStackTrace methods
      * @param request The http request sent through the fetch API from the client side using javascript for the submission of the search field
      * @return A wrapped object containing all the data about the search results such as videoID,videoTitle,ChannelTitle,ChannelId,description and url of the thumbnail
      * */
