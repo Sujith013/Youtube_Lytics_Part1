@@ -56,11 +56,18 @@ public class HomeController extends Controller {
      * */
     public CompletionStage<Result> submitInput(Http.Request request) {
      return CompletableFuture.supplyAsync(() -> {
-
+         boolean f = false;
          String sT = request.getQueryString("searchTerms");
 
          try
          {
+             for(int i=0;i<sT.length();i++)
+                 if(Character.isLetterOrDigit(sT.charAt(i)))
+                     f = true;
+
+             if(!f)
+                 throw new IllegalArgumentException();
+
              //encode the query with proper delimiters to avoid the errors with spaces.
              sT = URLEncoder.encode(sT, "UTF-8");
 
@@ -93,7 +100,7 @@ public class HomeController extends Controller {
      return CompletableFuture.supplyAsync(() -> {
 
          try{
-             //Get the official youtube api object created
+             //Get the official YouTube api object created
              youtube = YoutubeService.getService();
 
              VideoData videos = new VideoData(youtube,videoId,API_KEY);
@@ -119,10 +126,18 @@ public class HomeController extends Controller {
       * */
      public CompletionStage<Result> tagResultIndex(Http.Request request) {
      return CompletableFuture.supplyAsync(() -> {
+         boolean f = false;
          String sT = request.getQueryString("searchTerm");
 
          try
          {
+             for(int i=0;i<sT.length();i++)
+                 if(Character.isLetterOrDigit(sT.charAt(i)))
+                     f = true;
+
+             if(!f)
+                 throw new IllegalArgumentException();
+
              //encode the query with proper delimiters to avoid the errors with spaces.
              sT = URLEncoder.encode(sT, "UTF-8");
 

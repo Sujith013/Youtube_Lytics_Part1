@@ -1,8 +1,8 @@
 package Models;
 
+import java.util.List;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.VideoListResponse;
@@ -12,7 +12,7 @@ import com.google.api.services.youtube.model.VideoListResponse;
  * The java class containing the attributes and methods for the video data to be obtained and stored using the YouTube API
  * */
 public class VideoData {
-    private String videoTitle,channelTitle,description,thumbnail,tagsResponse;
+    final private String videoTitle,channelTitle,description,thumbnail,tagsResponse;
 
     /**
      * @author Sujith Manikandan

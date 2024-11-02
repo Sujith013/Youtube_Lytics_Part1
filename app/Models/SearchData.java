@@ -15,7 +15,7 @@ import com.google.api.services.youtube.model.SearchListResponse;
  * The java class containing the attributes and methods for the search data to be obtained and stored using the YouTube API
  * */
 public class SearchData {
-    private List<List<String>> videos;
+    private final List<List<String>> videos;
 
     /**
      * @author Sujith Manikandan

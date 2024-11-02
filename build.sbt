@@ -9,10 +9,17 @@ scalaVersion := "2.13.15"
 
 libraryDependencies += guice
 libraryDependencies += "com.google.apis" % "google-api-services-youtube" % "v3-rev20240514-2.0.0"
+
 libraryDependencies ++= Seq(
   "com.google.apis" % "google-api-services-youtube" % "v3-rev20240514-2.0.0",
   "com.google.api-client" % "google-api-client" % "2.6.0",
   "com.google.oauth-client" % "google-oauth-client-jetty" % "1.36.0",
   "com.google.http-client" % "google-http-client-jackson2" % "1.44.2"
+)
+
+libraryDependencies ++= Seq(
+  "org.mockito" % "mockito-core" % "5.11.0" % Test,
+  "junit" % "junit" % "4.13.2" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.19" % Test
 )
 
