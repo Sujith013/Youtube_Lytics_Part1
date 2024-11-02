@@ -8,8 +8,9 @@
  * */
 package controllers;
 
-import Models.SearchData;
 import Models.VideoData;
+import Models.SearchData;
+import Models.YoutubeService;
 
 import play.mvc.*;
 
@@ -17,10 +18,12 @@ import java.net.URLEncoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
+import java.security.GeneralSecurityException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CompletableFuture;
+
+import com.google.api.services.youtube.YouTube;
 
 /**
  * This is the one and only main controller for the project that handles the HTTP requests and renders
@@ -32,7 +35,7 @@ public class HomeController extends Controller {
 
     //The api key
     private static final String API_KEY = "AIzaSyAugi0_hJ_OgciWZoKLnYybGcZlq4CLJiw";
-
+    private static YouTube youtube;
 
 
     /**
@@ -51,31 +54,30 @@ public class HomeController extends Controller {
      * @param request The http request sent through the fetch API from the client side using javascript for the submission of the search field
      * @return A wrapped object containing all the data about the search results such as videoID,videoTitle,ChannelTitle,ChannelId,description and url of the thumbnail
      * */
-     public CompletionStage<Result> submitInput(Http.Request request) {
+    public CompletionStage<Result> submitInput(Http.Request request) {
      return CompletableFuture.supplyAsync(() -> {
-           String sT = request.getQueryString("searchTerms");
 
-           try {
-                sT = URLEncoder.encode(sT, "UTF-8");
-           }
-           catch (UnsupportedEncodingException e) {
-                e.printStackTrace(); // Handle the exception appropriately
-           }
+         String sT = request.getQueryString("searchTerms");
 
-           //final url to be passed onto the object
-           String apiUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + sT + "&maxResults=20&key=" + API_KEY;
+         try
+         {
+             //encode the query with proper delimiters to avoid the errors with spaces.
+             sT = URLEncoder.encode(sT, "UTF-8");
 
-           try {
-                //Maps the list of a list of string and returns it back to the client side JS.
-                ObjectMapper objectMapper = new ObjectMapper();
-                SearchData videos = new SearchData(apiUrl);
-                return ok(objectMapper.writeValueAsString(videos.videos));
-           }
-           catch (IOException | InterruptedException e)
-           {
-                e.printStackTrace();
-                return internalServerError("Error fetching YouTube data");
-           }
+             //get the YouTube service object
+             youtube = YoutubeService.getService();
+
+             //Maps the list of a list of string and returns it back to the client side JS.
+             ObjectMapper objectMapper = new ObjectMapper();
+             SearchData videos = new SearchData(youtube,sT,API_KEY);
+
+             return ok(objectMapper.writeValueAsString(videos.getVideos()));
+         }
+         catch (IOException | GeneralSecurityException e)
+         {
+             e.printStackTrace();
+             return internalServerError("Error fetching YouTube data");
+         }
        });
      }
 
@@ -89,16 +91,17 @@ public class HomeController extends Controller {
       * */
      public CompletionStage<Result>tagIndex(String videoId) {
      return CompletableFuture.supplyAsync(() -> {
-         //The final search url to be passed onto the api object/client
-         String apiUrl = "https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=" + videoId + "&key=" + API_KEY;
 
-         try
-         {
+         try{
+             //Get the official youtube api object created
+             youtube = YoutubeService.getService();
+
+             VideoData videos = new VideoData(youtube,videoId,API_KEY);
+
              //Returns all the information obtained about the video using the id back to the client side JS.
-             VideoData videos = new VideoData(apiUrl);
-             return ok(views.html.tags.render(videoId,videos.videoTitle,videos.channelTitle,videos.description,videos.thumbnail,videos.tagsResponse));
+             return ok(views.html.tags.render(videoId,videos.getVideoTitle(),videos.getChannelTitle(),videos.getDescription(),videos.getThumbnail(),videos.getTagsResponse()));
          }
-         catch (IOException | InterruptedException e)
+         catch (IOException | GeneralSecurityException e)
          {
              e.printStackTrace();
              return internalServerError("Error fetching YouTube data");
@@ -116,29 +119,23 @@ public class HomeController extends Controller {
       * */
      public CompletionStage<Result> tagResultIndex(Http.Request request) {
      return CompletableFuture.supplyAsync(() -> {
-
          String sT = request.getQueryString("searchTerm");
 
          try
          {
+             //encode the query with proper delimiters to avoid the errors with spaces.
              sT = URLEncoder.encode(sT, "UTF-8");
-         }
-         catch (UnsupportedEncodingException e)
-         {
-             e.printStackTrace(); // Handle the exception appropriately
-         }
 
-         //final url to be passed onto the object
-         String apiUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + sT + "&maxResults=20&key=" + API_KEY;
+             //get the YouTube service object
+             youtube = YoutubeService.getService();
 
-         try
-         {
              //Maps the list of a list of string and returns it back to the client side JS.
              ObjectMapper objectMapper = new ObjectMapper();
-             SearchData videos = new SearchData(apiUrl);
-             return ok(objectMapper.writeValueAsString(videos.videos));
+             SearchData videos = new SearchData(youtube,sT,API_KEY);
+
+             return ok(objectMapper.writeValueAsString(videos.getVideos()));
          }
-         catch (IOException | InterruptedException e)
+         catch (IOException | GeneralSecurityException e)
          {
              e.printStackTrace();
              return internalServerError("Error fetching YouTube data");

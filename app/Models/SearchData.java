@@ -1,60 +1,57 @@
 package Models;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.SearchListResponse;
 
 /**
  * @author Sujith Manikandan
  * The java class containing the attributes and methods for the search data to be obtained and stored using the YouTube API
  * */
 public class SearchData {
-    public List<List<String>> videos;
+    private List<List<String>> videos;
 
     /**
      * @author Sujith Manikandan
-     * @param apiUrl The url to be passed into the api object created to search for the information using the parameter video id.
-     * @throws InterruptedException API request is interrupted before completion
+     * @param query the search query/keyword to be searched with to get relevant results
+     * @param youtube the official YouTube api object
+     * @param api_key the official api key used to connect to the client
      * @throws IOException due to network or I/O issues such as connectivity issues
      * */
-    public SearchData(String apiUrl) throws InterruptedException, IOException
-    {
-        HttpClient client = HttpClient.newHttpClient();
+    public SearchData(YouTube youtube, String query,String api_key) throws IOException {
+        YouTube.Search.List search = youtube.search().list(Collections.singletonList("snippet"));
+        search.setQ(query);
+        search.setMaxResults(20L);
+        search.setKey(api_key);
 
-        // Build a GET Request to YouTube API
-        HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl))
-                .GET()
-                .build();
+        // Execute the search request and get the response
+        SearchListResponse response = search.execute();
 
-        // Send the request and get the response
-        HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-
-        // Parse the response JSON
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonResponse = objectMapper.readTree(response.body());
-
-        //Streams are used to filter only the videos from the search results and leave out all the other
-        //information such as channel and shorts. Then map the values to only get a list of strings of
-        //video and channel id and title, description and the url for the thumbnail.
-        this.videos = StreamSupport.stream(jsonResponse.get("items").spliterator(), false)
-                .filter(video -> "youtube#video".equals(video.get("id").get("kind").asText()))
-                .map(video -> Arrays.asList(video.get("snippet").get("title").asText(),
-                        "https://www.youtube.com/watch?v=" + video.get("id").get("videoId").asText(),
-                        "https://www.youtube.com/@"+video.get("snippet").get("channelTitle").asText(),
-                        video.get("snippet").get("description").asText(),
-                        video.get("snippet").get("thumbnails").get("high").get("url").asText(),
-                        "https://www.youtube.com/channel/"+video.get("snippet").get("channelId").asText()))
+        // Filter and map the response to extract video details
+        this.videos = response.getItems().stream()
+                .filter(video -> "youtube#video".equals(video.getId().getKind()))
+                .map(video -> Arrays.asList(
+                        video.getSnippet().getTitle(),
+                        "https://www.youtube.com/watch?v=" + video.getId().getVideoId(),
+                        "https://www.youtube.com/@"+video.getSnippet().getChannelTitle(),
+                        video.getSnippet().getDescription(),
+                        video.getSnippet().getThumbnails().getHigh().getUrl(),
+                        "https://www.youtube.com/channel/"+video.getSnippet().getChannelId()))
                 .limit(10)
                 .collect(Collectors.toList());
+    }
+
+
+    /**
+     * @return the list of the list of videos containing all the information
+     * */
+    public List<List<String>> getVideos(){
+        return this.videos;
     }
 }
