@@ -21,8 +21,38 @@ public class VideoData {
      * @param api_key the official api key used to connect to the client
      * @throws IOException due to network or I/O issues such as connectivity issues
      * */
-    public VideoData (YouTube youtube,String id,String api_key) throws IOException
+    public VideoData (YouTube youtube,String id,String api_key) throws IOException, NullPointerException
     {
+        if(api_key.isEmpty() || id.isEmpty())
+            throw new NullPointerException();
+        else if(api_key.length()<39)
+            throw new IllegalArgumentException("API key length too short");
+        else if(api_key.length()>39)
+            throw new IllegalArgumentException("API key length too long");
+
+        boolean f = true;
+
+        for(int i=0;i<api_key.length();i++)
+            if(!Character.isLetterOrDigit(api_key.charAt(i)) && api_key.charAt(i)!='_' && api_key.charAt(i)!='-')
+                f = false;
+
+        if(!f)
+            throw new IllegalArgumentException("API key must only contain alphanumeric characters with - and _");
+
+
+        if(id.length()<11)
+            throw new IllegalArgumentException("video id length too short");
+        else if(id.length()>11)
+            throw new IllegalArgumentException("video id length too long");
+
+        for(int i=0;i<id.length();i++)
+            if(!Character.isLetterOrDigit(id.charAt(i)) && id.charAt(i)!='_' && id.charAt(i)!='-')
+                f = false;
+
+        if(!f)
+            throw new IllegalArgumentException("video id must only contain alphanumeric characters with - and _");
+
+
         YouTube.Videos.List video_list = youtube.videos().list(Collections.singletonList("snippet,contentDetails,statistics"));
         video_list.setId(Collections.singletonList(id));
         video_list.setKey(api_key);

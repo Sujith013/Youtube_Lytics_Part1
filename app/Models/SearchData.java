@@ -1,6 +1,5 @@
 package Models;
 
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,6 +24,23 @@ public class SearchData {
      * @throws IOException due to network or I/O issues such as connectivity issues
      * */
     public SearchData(YouTube youtube, String query,String api_key) throws IOException {
+        if(api_key.isEmpty())
+            throw new NullPointerException();
+        else if(api_key.length()<39)
+            throw new IllegalArgumentException("API key length too short");
+        else if(api_key.length()>39)
+            throw new IllegalArgumentException("API key length too long");
+
+        boolean f = true;
+
+        for(int i=0;i<api_key.length();i++)
+            if(!Character.isLetterOrDigit(api_key.charAt(i)) && api_key.charAt(i)!='_' && api_key.charAt(i)!='-')
+                f = false;
+
+        if(!f)
+            throw new IllegalArgumentException("API key must only contain alphanumeric characters with - and _");
+
+
         YouTube.Search.List search = youtube.search().list(Collections.singletonList("snippet"));
         search.setQ(query);
         search.setMaxResults(20L);
