@@ -19,9 +19,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
-import java.security.GeneralSecurityException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CompletableFuture;
+import java.security.GeneralSecurityException;
 
 import com.google.api.services.youtube.YouTube;
 
@@ -146,7 +146,7 @@ public class HomeController extends Controller {
 
              //Maps the list of a list of string and returns it back to the client side JS.
              ObjectMapper objectMapper = new ObjectMapper();
-             SearchData videos = new SearchData(youtube,sT,API_KEY);
+             SearchData videos = new SearchData(youtube,sT,API_KEY,true);
 
              return ok(objectMapper.writeValueAsString(videos.getVideos()));
          }

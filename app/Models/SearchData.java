@@ -1,6 +1,7 @@
 package Models;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -52,6 +53,70 @@ public class SearchData {
         // Filter and map the response to extract video details
         this.videos = response.getItems().stream()
                 .filter(video -> "youtube#video".equals(video.getId().getKind()))
+                .map(video -> Arrays.asList(
+                        video.getSnippet().getTitle(),
+                        "https://www.youtube.com/watch?v=" + video.getId().getVideoId(),
+                        "https://www.youtube.com/@"+video.getSnippet().getChannelTitle(),
+                        video.getSnippet().getDescription(),
+                        video.getSnippet().getThumbnails().getHigh().getUrl(),
+                        "https://www.youtube.com/channel/"+video.getSnippet().getChannelId()))
+                .limit(10)
+                .collect(Collectors.toList());
+    }
+
+    public static boolean checkTagPresent(String videoId,String tag,String API_KEY) throws NullPointerException
+    {
+        try{
+            //Get the official YouTube api object created
+            YouTube youtube = YoutubeService.getService();
+
+            VideoData videos = new VideoData(youtube,videoId,API_KEY);
+
+            String[] tags = videos.getTagsResponse().split("\\+");
+
+                for (String p : tags)
+                    if (p.equals(tag))
+                        return true;
+
+            return false;
+        }
+        catch (IOException | GeneralSecurityException | NullPointerException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public SearchData(YouTube youtube, String query,String api_key,boolean tag) throws IOException {
+        if(api_key.isEmpty())
+            throw new NullPointerException();
+        else if(api_key.length()<39)
+            throw new IllegalArgumentException("API key length too short");
+        else if(api_key.length()>39)
+            throw new IllegalArgumentException("API key length too long");
+
+        boolean f = true;
+
+        for(int i=0;i<api_key.length();i++)
+            if(!Character.isLetterOrDigit(api_key.charAt(i)) && api_key.charAt(i)!='_' && api_key.charAt(i)!='-')
+                f = false;
+
+        if(!f)
+            throw new IllegalArgumentException("API key must only contain alphanumeric characters with - and _");
+
+
+        YouTube.Search.List search = youtube.search().list(Collections.singletonList("snippet"));
+        search.setQ(query);
+        search.setMaxResults(300L);
+        search.setKey(api_key);
+
+        // Execute the search request and get the response
+        SearchListResponse response = search.execute();
+
+        // Filter and map the response to extract video details
+        this.videos = response.getItems().stream()
+                .filter(video -> "youtube#video".equals(video.getId().getKind()))
+                .filter(video -> checkTagPresent(video.getId().getVideoId(),query,api_key))
                 .map(video -> Arrays.asList(
                         video.getSnippet().getTitle(),
                         "https://www.youtube.com/watch?v=" + video.getId().getVideoId(),

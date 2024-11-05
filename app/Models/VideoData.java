@@ -52,7 +52,6 @@ public class VideoData {
         if(!f)
             throw new IllegalArgumentException("video id must only contain alphanumeric characters with - and _");
 
-
         YouTube.Videos.List video_list = youtube.videos().list(Collections.singletonList("snippet,contentDetails,statistics"));
         video_list.setId(Collections.singletonList(id));
         video_list.setKey(api_key);
