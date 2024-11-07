@@ -25,6 +25,12 @@ function printOutput(data,searchParams)
 {
     const sR = document.getElementById('searchResults');
 
+    var happy_list = ["happy","joy"];
+    var sad_list = ["sad","angry"];
+
+    var happy = 0;
+    var sad = 0;
+
     var newHead = document.createElement("p");
     var headVal = "<b><u>Search Terms</u>:</b> "+searchParams.toString().split("=")[1].replaceAll("+"," ")+"<br>";
     newHead.innerHTML = headVal;
@@ -43,7 +49,18 @@ function printOutput(data,searchParams)
            sR.insertBefore(newDiv, sR.firstChild); // Insert before the first child
        else
            sR.appendChild(newDiv);
+
+       //loop through the data[i][3]
+       //if word in happy_list -> happy+=1;
+       //if word in sad_list -> sad+=1;
     }
+
+    //if (happy/(happy+sad)) >= 0.7
+    //newHead.innerHTML += :)
+    //else if <=0.3
+        // += :(
+      //else
+        // += :|
 
     if(sR.firstChild)
         sR.insertBefore(newHead, sR.firstChild); // Insert before the first child

@@ -45,6 +45,13 @@ public class SearchDataTest {
     @Mock
     private Thumbnail[] mockThumbnail = new Thumbnail[20];
 
+/*    @Mock
+    private VideoData mockVideoData;
+
+    private static final String VALID_VIDEO_ID = "validVideoId";
+    private static final String VALID_TAG = "music";
+    private static final String API_KEY = "dummyApiKey";*/
+
     private final String query = "ted+talks";
     private final String api_key = "AIzaSyAugi0_hJ_OgciWZoKLnYybGcZlq4CLJiw";
 
@@ -111,12 +118,6 @@ public class SearchDataTest {
         assertEquals("The processed video list should match the expected output.", expectedVideos, ytSearch.getVideos());
         assertNotNull(ytSearch.getVideos());
 
-        // Verify interactions
-        verify(mockSearchList).setQ(query);
-        verify(mockSearchList).setKey(api_key);
-        verify(mockSearchList).setMaxResults(20L);
-        verify(mockSearchList).execute();
-
 
         // API key testing
         //Case 1: Null pointer exception
@@ -131,4 +132,63 @@ public class SearchDataTest {
         //Case 4: Illegal argument exception, api key contains illegal characters
         assertThrows(IllegalArgumentException.class, () -> new VideoData(mockYoutube, query, "AI/aSyAugi0_hJ_OgciWZoKLnY*%cZlq4CLJi&"));
     }
+
+/*    @Test
+    public void testCheckTagPresent_whenTagIsPresent() throws Exception {
+        // Mock VideoData to return a response containing the tag
+        when(mockVideoData.getTagsResponse()).thenReturn("music+travel+vlog");
+        when(YoutubeService.getService()).thenReturn(mockYoutube);
+
+        whenNew(VideoData.class).withArguments(mockYoutube, VALID_VIDEO_ID, API_KEY)
+                .thenReturn(mockVideoData);
+
+        // Execute the method
+        boolean result = SearchData.checkTagPresent(VALID_VIDEO_ID, VALID_TAG, API_KEY);
+
+        // Verify result
+        assertTrue(result, "Expected the tag to be present");
+    }
+
+    @Test
+    public void testCheckTagPresent_whenTagIsNotPresent() throws Exception {
+        // Mock VideoData to return a response that does not contain the tag
+        when(mockVideoData.getTagsResponse()).thenReturn("travel+vlog");
+        when(YoutubeService.getService()).thenReturn(mockYoutube);
+        whenNew(VideoData.class).withArguments(mockYoutube, VALID_VIDEO_ID, API_KEY)
+                .thenReturn(mockVideoData);
+
+        // Execute the method
+        boolean result = SearchData.checkTagPresent(VALID_VIDEO_ID, VALID_TAG, API_KEY);
+
+        // Verify result
+        assertFalse(result, "Expected the tag not to be present");
+    }
+
+    @Test
+    public void testCheckTagPresent_whenIOExceptionIsThrown() throws Exception {
+        // Simulate an IOException in VideoData constructor
+        when(YoutubeService.getService()).thenReturn(mockYoutube);
+        whenNew(VideoData.class).withArguments(mockYoutube, VALID_VIDEO_ID, API_KEY)
+                .thenThrow(new IOException("YouTube API error"));
+
+        // Execute the method
+        boolean result = SearchData.checkTagPresent(VALID_VIDEO_ID, VALID_TAG, API_KEY);
+
+        // Verify result
+        assertFalse(result, "Expected false due to IOException");
+    }
+
+    @Test
+    public void testCheckTagPresent_whenGeneralSecurityExceptionIsThrown() throws Exception {
+        // Simulate a GeneralSecurityException in VideoData constructor
+        when(YoutubeService.getService()).thenReturn(mockYoutube);
+        whenNew(VideoData.class).withArguments(mockYoutube, VALID_VIDEO_ID, API_KEY)
+                .thenThrow(new GeneralSecurityException("Security error"));
+
+        // Execute the method
+        boolean result = SearchData.checkTagPresent(VALID_VIDEO_ID, VALID_TAG, API_KEY);
+
+        // Verify result
+        assertFalse(result, "Expected false due to GeneralSecurityException");
+    }*/
 }

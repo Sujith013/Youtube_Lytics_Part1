@@ -11,6 +11,7 @@ package controllers;
 import Models.VideoData;
 import Models.SearchData;
 import Models.YoutubeService;
+import Models.ChannelData;
 
 import play.mvc.*;
 
@@ -37,7 +38,6 @@ public class HomeController extends Controller {
     private static final String API_KEY = "AIzaSyAugi0_hJ_OgciWZoKLnYybGcZlq4CLJiw";
     private static YouTube youtube;
 
-
     /**
      * @author Sujith Manikandan
      * @return returns the view of the index page containing the html content for the main page of our application
@@ -50,7 +50,8 @@ public class HomeController extends Controller {
 
 
     /**
-     * @author Sujith Manikandan
+     * @author Tharun Balaji
+     * @author Thansil Mohammed Syed Hamdulla
      * @param request The http request sent through the fetch API from the client side using javascript for the submission of the search field
      * @return A wrapped object containing all the data about the search results such as videoID,videoTitle,ChannelTitle,ChannelId,description and url of the thumbnail
      * */
@@ -157,4 +158,34 @@ public class HomeController extends Controller {
          }
        });
      }
+
+    /**
+     * @author Thansil Mohammed Syed Hamdulla
+     * Method to handle requests for displaying the channel profile page.
+     * @param channelId The ID of the YouTube channel to display.
+     * @return A Result containing the channel profile page.
+     */
+    public CompletionStage<Result> channelProfile(String channelId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                // Initialize YouTube service if not already initialized
+                youtube = YoutubeService.getService();
+
+                // Fetch the channel data using the ChannelData model
+                ChannelData channelData = new ChannelData(youtube, channelId, API_KEY);
+
+                // Render the channel profile page with channel details and recent videos
+                return ok(views.html.ChannelData.render(
+                        channelData.getChannelTitle(),
+                        channelData.getDescription(),
+                        channelData.getSubscriberCount(),
+                        channelData.getThumbnailUrl(),
+                        channelData.getRecentVideos() // List of recent videos
+                ));
+            } catch (IOException | GeneralSecurityException e) {
+                e.printStackTrace();
+                return internalServerError("Error fetching channel data");
+            }
+        });
+    }
 }

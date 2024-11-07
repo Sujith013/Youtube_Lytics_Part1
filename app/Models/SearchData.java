@@ -11,14 +11,14 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 
 /**
- * @author Sujith Manikandan
  * The java class containing the attributes and methods for the search data to be obtained and stored using the YouTube API
  * */
 public class SearchData {
     private final List<List<String>> videos;
 
     /**
-     * @author Sujith Manikandan
+     * @author Tharun Balaji
+     * @author Thansil Mohammed Syed Hamdulla
      * @param query the search query/keyword to be searched with to get relevant results
      * @param youtube the official YouTube api object
      * @param api_key the official api key used to connect to the client
@@ -44,7 +44,7 @@ public class SearchData {
 
         YouTube.Search.List search = youtube.search().list(Collections.singletonList("snippet"));
         search.setQ(query);
-        search.setMaxResults(20L);
+        search.setMaxResults(50L);
         search.setKey(api_key);
 
         // Execute the search request and get the response
@@ -59,11 +59,20 @@ public class SearchData {
                         "https://www.youtube.com/@"+video.getSnippet().getChannelTitle(),
                         video.getSnippet().getDescription(),
                         video.getSnippet().getThumbnails().getHigh().getUrl(),
-                        "https://www.youtube.com/channel/"+video.getSnippet().getChannelId()))
+                        "/channel/"+video.getSnippet().getChannelId()))
                 .limit(10)
                 .collect(Collectors.toList());
     }
 
+
+    /**
+     * @author Sujith Manikandan
+     * @param videoId the id of the video
+     * @param tag the tag to be matched with
+     * @param API_KEY the api key to fetch the data
+     * @throws NullPointerException when no tags are present in the video
+     * @return a boolean value to determine whether the given tag is present in the video or not
+     * */
     public static boolean checkTagPresent(String videoId,String tag,String API_KEY) throws NullPointerException
     {
         try{
@@ -87,6 +96,16 @@ public class SearchData {
         }
     }
 
+
+    /**
+     * @author Tharun Balaji
+     * @author Sujith Manikandan
+     * @author Thansil Mohammed Syed Hamdulla
+     * @param query the search query/keyword to be searched with to get relevant results
+     * @param youtube the official YouTube api object
+     * @param api_key the official api key used to connect to the client
+     * @throws IOException due to network or I/O issues such as connectivity issues
+     * */
     public SearchData(YouTube youtube, String query,String api_key,boolean tag) throws IOException {
         if(api_key.isEmpty())
             throw new NullPointerException();
@@ -123,7 +142,7 @@ public class SearchData {
                         "https://www.youtube.com/@"+video.getSnippet().getChannelTitle(),
                         video.getSnippet().getDescription(),
                         video.getSnippet().getThumbnails().getHigh().getUrl(),
-                        "https://www.youtube.com/channel/"+video.getSnippet().getChannelId()))
+                        "/channel/"+video.getSnippet().getChannelId()))
                 .limit(10)
                 .collect(Collectors.toList());
     }
