@@ -11,7 +11,7 @@ import com.google.api.services.youtube.model.VideoListResponse;
  * @author Sujith Manikandan
  * The java class containing the attributes and methods for the video data to be obtained and stored using the YouTube API
  * */
-public class VideoData {
+public class TagsData {
     final private String videoTitle,channelTitle,description,thumbnail,tagsResponse;
 
     /**
@@ -21,7 +21,7 @@ public class VideoData {
      * @param api_key the official api key used to connect to the client
      * @throws IOException due to network or I/O issues such as connectivity issues
      * */
-    public VideoData (YouTube youtube,String id,String api_key) throws IOException, NullPointerException
+    public TagsData(YouTube youtube, String id, String api_key) throws IOException, NullPointerException
     {
         if(api_key.isEmpty() || id.isEmpty())
             throw new NullPointerException();

@@ -15,24 +15,18 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
         method: 'GET',
     })
     .then(response => response.json())
-    .then(data => printOutput(data,searchParams))
+    .then(data => printOutput(data?.data,data?.senti,searchParams))
     .catch(error => {
         console.error('Error:', error);
     });
 });
 
-function printOutput(data,searchParams)
+function printOutput(data,sentiment,searchParams)
 {
     const sR = document.getElementById('searchResults');
 
-    var happy_list = ["happy","joy"];
-    var sad_list = ["sad","angry"];
-
-    var happy = 0;
-    var sad = 0;
-
     var newHead = document.createElement("p");
-    var headVal = "<b><u>Search Terms</u>:</b> "+searchParams.toString().split("=")[1].replaceAll("+"," ")+"<br>";
+    var headVal = "<b><u>Search Terms</u>:</b> "+searchParams.toString().split("=")[1].replaceAll("+"," ")+"  "+sentiment+"<br>";
     newHead.innerHTML = headVal;
     newHead.classList.add("list_1");
 
@@ -49,18 +43,7 @@ function printOutput(data,searchParams)
            sR.insertBefore(newDiv, sR.firstChild); // Insert before the first child
        else
            sR.appendChild(newDiv);
-
-       //loop through the data[i][3]
-       //if word in happy_list -> happy+=1;
-       //if word in sad_list -> sad+=1;
     }
-
-    //if (happy/(happy+sad)) >= 0.7
-    //newHead.innerHTML += :)
-    //else if <=0.3
-        // += :(
-      //else
-        // += :|
 
     if(sR.firstChild)
         sR.insertBefore(newHead, sR.firstChild); // Insert before the first child

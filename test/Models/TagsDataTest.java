@@ -18,7 +18,7 @@ import java.util.Collections;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class VideoDataTest {
+public class TagsDataTest {
 
     @Mock
     private YouTube mockYouTube;
@@ -90,41 +90,41 @@ public class VideoDataTest {
     public void testVideoDataGrabbing() throws IOException {
         // API key testing
         //Case 1: Null pointer exception
-        assertThrows(NullPointerException.class, () -> new VideoData(mockYouTube, VIDEO_ID, ""));
+        assertThrows(NullPointerException.class, () -> new TagsData(mockYouTube, VIDEO_ID, ""));
 
         //Case 2: Illegal argument exception, api length too short
-        assertThrows(IllegalArgumentException.class, () -> new VideoData(mockYouTube, VIDEO_ID, "abbbbbdidi"));
+        assertThrows(IllegalArgumentException.class, () -> new TagsData(mockYouTube, VIDEO_ID, "abbbbbdidi"));
 
         //Case 3: Illegal argument exception, api length too long
-        assertThrows(IllegalArgumentException.class, () -> new VideoData(mockYouTube, VIDEO_ID, "abbbbbdidissssssssssijfijfinfianfdinfinafinidni"));
+        assertThrows(IllegalArgumentException.class, () -> new TagsData(mockYouTube, VIDEO_ID, "abbbbbdidissssssssssijfijfinfianfdinfinafinidni"));
 
         //Case 4: Illegal argument exception, api key contains illegal characters
-        assertThrows(IllegalArgumentException.class, () -> new VideoData(mockYouTube, VIDEO_ID, "AI/aSyAugi0_hJ_OgciWZoKLnY*%cZlq4CLJi&"));
+        assertThrows(IllegalArgumentException.class, () -> new TagsData(mockYouTube, VIDEO_ID, "AI/aSyAugi0_hJ_OgciWZoKLnY*%cZlq4CLJi&"));
 
 
         // Video ID testing
         //Case 1: Null pointer exception
-        assertThrows(NullPointerException.class, () -> new VideoData(mockYouTube, "", API_KEY));
+        assertThrows(NullPointerException.class, () -> new TagsData(mockYouTube, "", API_KEY));
 
         //Case 2: Illegal argument exception, id length too short
-        assertThrows(IllegalArgumentException.class, () -> new VideoData(mockYouTube, "HrCbXNRe", API_KEY));
+        assertThrows(IllegalArgumentException.class, () -> new TagsData(mockYouTube, "HrCbXNRe", API_KEY));
 
         //Case 3: Illegal argument exception, id length too long
-        assertThrows(IllegalArgumentException.class, () -> new VideoData(mockYouTube, "HrCbXNRP7egsss", API_KEY));
+        assertThrows(IllegalArgumentException.class, () -> new TagsData(mockYouTube, "HrCbXNRP7egsss", API_KEY));
 
         //Case 4: Illegal argument exception, id contains illegal characters
-        assertThrows(IllegalArgumentException.class, () -> new VideoData(mockYouTube, "HrCbXNRP/%_", API_KEY));
+        assertThrows(IllegalArgumentException.class, () -> new TagsData(mockYouTube, "HrCbXNRP/%_", API_KEY));
 
 
         //Successful case
-        VideoData videoData = new VideoData(mockYouTube, VIDEO_ID, API_KEY);
-        assertNotNull("videoData object was successfully created and the grabbed values were initialized",videoData);
+        TagsData tagsData = new TagsData(mockYouTube, VIDEO_ID, API_KEY);
+        assertNotNull("videoData object was successfully created and the grabbed values were initialized", tagsData);
 
         // Assertions to verify that VideoData is correctly initialized
-        assertEquals("Video title should match", VIDEO_TITLE, videoData.getVideoTitle());
-        assertEquals("Description should match", DESCRIPTION, videoData.getDescription());
-        assertEquals("Thumbnail URL should match", THUMBNAIL_URL, videoData.getThumbnail());
-        assertEquals("Channel title should match", CHANNEL_TITLE, videoData.getChannelTitle());
-        assertEquals("Tags should be joined with '+'", String.join("+", TAGS), videoData.getTagsResponse());
+        assertEquals("Video title should match", VIDEO_TITLE, tagsData.getVideoTitle());
+        assertEquals("Description should match", DESCRIPTION, tagsData.getDescription());
+        assertEquals("Thumbnail URL should match", THUMBNAIL_URL, tagsData.getThumbnail());
+        assertEquals("Channel title should match", CHANNEL_TITLE, tagsData.getChannelTitle());
+        assertEquals("Tags should be joined with '+'", String.join("+", TAGS), tagsData.getTagsResponse());
     }
 }

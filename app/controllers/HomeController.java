@@ -8,7 +8,7 @@
  * */
 package controllers;
 
-import Models.VideoData;
+import Models.TagsData;
 import Models.SearchData;
 import Models.YoutubeService;
 import Models.ChannelData;
@@ -20,6 +20,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CompletableFuture;
 import java.security.GeneralSecurityException;
@@ -79,7 +83,19 @@ public class HomeController extends Controller {
              ObjectMapper objectMapper = new ObjectMapper();
              SearchData videos = new SearchData(youtube,sT,API_KEY);
 
-             return ok(objectMapper.writeValueAsString(videos.getVideos()));
+             ArrayList<String> descriptions = new ArrayList<String>();
+
+             for(List<String> s : videos.getVideos()){
+                 descriptions.add(s.get(3));
+             }
+
+             String sentiment = SearchData.getSentimentAnalysis(descriptions);
+
+             Map<String, Object> response = new HashMap<>();
+             response.put("data", videos.getVideos());
+             response.put("senti", sentiment);
+
+             return ok(objectMapper.writeValueAsString(response));
          }
          catch (IOException | GeneralSecurityException e)
          {
@@ -104,7 +120,7 @@ public class HomeController extends Controller {
              //Get the official YouTube api object created
              youtube = YoutubeService.getService();
 
-             VideoData videos = new VideoData(youtube,videoId,API_KEY);
+             TagsData videos = new TagsData(youtube,videoId,API_KEY);
 
              //Returns all the information obtained about the video using the id back to the client side JS.
              return ok(views.html.tags.render(videoId,videos.getVideoTitle(),videos.getChannelTitle(),videos.getDescription(),videos.getThumbnail(),videos.getTagsResponse()));

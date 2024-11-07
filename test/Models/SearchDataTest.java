@@ -121,16 +121,16 @@ public class SearchDataTest {
 
         // API key testing
         //Case 1: Null pointer exception
-        assertThrows(NullPointerException.class, () -> new VideoData(mockYoutube, query, ""));
+        assertThrows(NullPointerException.class, () -> new TagsData(mockYoutube, query, ""));
 
         //Case 2: Illegal argument exception, api length too short
-        assertThrows(IllegalArgumentException.class, () -> new VideoData(mockYoutube, query, "abbbbbdidi"));
+        assertThrows(IllegalArgumentException.class, () -> new TagsData(mockYoutube, query, "abbbbbdidi"));
 
         //Case 3: Illegal argument exception, api length too long
-        assertThrows(IllegalArgumentException.class, () -> new VideoData(mockYoutube, query, "abbbbbdidissssssssssijfijfinfianfdinfinafinidni"));
+        assertThrows(IllegalArgumentException.class, () -> new TagsData(mockYoutube, query, "abbbbbdidissssssssssijfijfinfianfdinfinafinidni"));
 
         //Case 4: Illegal argument exception, api key contains illegal characters
-        assertThrows(IllegalArgumentException.class, () -> new VideoData(mockYoutube, query, "AI/aSyAugi0_hJ_OgciWZoKLnY*%cZlq4CLJi&"));
+        assertThrows(IllegalArgumentException.class, () -> new TagsData(mockYoutube, query, "AI/aSyAugi0_hJ_OgciWZoKLnY*%cZlq4CLJi&"));
     }
 
 /*    @Test
