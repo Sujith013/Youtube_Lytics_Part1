@@ -39,8 +39,9 @@ import com.google.api.services.youtube.YouTube;
 public class HomeController extends Controller {
 
     //The api key
-    private static final String API_KEY = "AIzaSyAugi0_hJ_OgciWZoKLnYybGcZlq4CLJiw";
+    private static final String API_KEY = "AIzaSyDycQNgX1KuZSCibwXdsyxpDdRfb0rr6FI";
     private static YouTube youtube;
+    private static SearchData videos;
 
     /**
      * @author Sujith Manikandan
@@ -81,7 +82,7 @@ public class HomeController extends Controller {
 
              //Maps the list of a list of string and returns it back to the client side JS.
              ObjectMapper objectMapper = new ObjectMapper();
-             SearchData videos = new SearchData(youtube,sT,API_KEY);
+             videos = new SearchData(youtube,sT,API_KEY);
 
              ArrayList<String> descriptions = new ArrayList<String>();
 
@@ -97,7 +98,7 @@ public class HomeController extends Controller {
 
              return ok(objectMapper.writeValueAsString(response));
          }
-         catch (IOException | GeneralSecurityException e)
+         catch (IOException | GeneralSecurityException | IllegalStateException e)
          {
              e.printStackTrace();
              return internalServerError("Error fetching YouTube data");
@@ -204,4 +205,21 @@ public class HomeController extends Controller {
             }
         });
     }
+
+
+    public CompletionStage<Result> wordStats(String searchNumber) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                // Render the channel profile page with channel details and recent videos
+                return ok(views.html.StatsData.render(
+                    videos.getWordStats()
+                ));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return internalServerError("Error fetching channel data");
+            }
+        });
+    }
+
+
 }

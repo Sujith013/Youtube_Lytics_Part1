@@ -5,6 +5,8 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
     const formData = new FormData(form);
     const searchParams = new URLSearchParams();
 
+    var stats_number = 1;
+
     // Convert FormData to URLSearchParams
     for (const pair of formData) {
         searchParams.append(pair[0], pair[1]);
@@ -15,18 +17,18 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
         method: 'GET',
     })
     .then(response => response.json())
-    .then(data => printOutput(data?.data,data?.senti,searchParams))
+    .then(data => printOutput(data?.data,data?.senti,searchParams,stats_number++))
     .catch(error => {
         console.error('Error:', error);
     });
 });
 
-function printOutput(data,sentiment,searchParams)
+function printOutput(data,sentiment,searchParams,stats_number)
 {
     const sR = document.getElementById('searchResults');
 
     var newHead = document.createElement("p");
-    var headVal = "<b><u>Search Terms</u>:</b> "+searchParams.toString().split("=")[1].replaceAll("+"," ")+"  "+sentiment+"<br>";
+    var headVal = "<b><u>Search Terms</u>:</b> "+searchParams.toString().split("=")[1].replaceAll("+"," ")+"  "+sentiment+"<a target=\"_blank\" href=\"/wordStats/"+stats_number+"\">&nbsp&nbsp&nbsp&nbsp&nbspWord_Stats</a>";
     newHead.innerHTML = headVal;
     newHead.classList.add("list_1");
 

@@ -1,11 +1,12 @@
 package Models;
 
+import java.util.*;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
+
+import java.util.stream.Stream;
+import java.util.LinkedHashMap;
+import java.security.GeneralSecurityException;
 
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
@@ -15,6 +16,8 @@ import com.google.api.services.youtube.model.SearchListResponse;
  * */
 public class SearchData {
     private final List<List<String>> videos;
+    private final LinkedHashMap<String, Long> word_stats; // Word frequency map
+
 
     /**
      * @author Tharun Balaji
@@ -62,6 +65,9 @@ public class SearchData {
                         "/channel/"+video.getSnippet().getChannelId()))
                 .limit(10)
                 .collect(Collectors.toList());
+
+        // Calculate word statistics
+        this.word_stats = this.calculateWordStats();
     }
 
 
@@ -145,7 +151,42 @@ public class SearchData {
                         "/channel/"+video.getSnippet().getChannelId()))
                 .limit(10)
                 .collect(Collectors.toList());
+
+        // Calculate word statistics
+        this.word_stats = this.calculateWordStats();
     }
+
+    /**
+     * Method to calculate word frequency statistics from video descriptions.
+     *
+     * @return A map of word frequencies
+     */
+    private LinkedHashMap<String, Long> calculateWordStats() {
+        Map<String,Long> partial_result = this.videos.stream()
+                .limit(50) // Limit to the latest 50 videos
+                .flatMap(video -> Stream.of(video.get(3).toLowerCase().split("\\W+"))) // Using index 3 for description
+                .filter(word -> !word.isEmpty()) // Remove empty strings
+                .collect(Collectors.groupingBy(word -> word, Collectors.counting()));
+
+        List<Map.Entry<String, Long>> entryList = new ArrayList<>(partial_result.entrySet());
+
+        // Sort the list based on values in descending order
+        entryList.sort((entry1, entry2) -> {
+            return Long.compare(entry2.getValue(), entry1.getValue()); // Descending order
+        });
+
+        // Create a LinkedHashMap to maintain the insertion order
+        LinkedHashMap<String, Long> sortedMap = new LinkedHashMap<>();
+
+        for (Map.Entry<String, Long> entry : entryList) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        System.out.println(entryList);
+
+        return sortedMap;
+    }
+
 
     /**
      * @author Prakash Yuvaraj
@@ -356,4 +397,10 @@ public class SearchData {
     public List<List<String>> getVideos(){
         return this.videos;
     }
+
+    /**
+     * @return The word frequency statistics as a map
+     */
+    public LinkedHashMap<String, Long> getWordStats() {
+        return this.word_stats;}
 }
