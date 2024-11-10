@@ -5,9 +5,9 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.ChannelListResponse;
 import com.google.api.services.youtube.model.PlaylistItemListResponse;
 
+import java.util.List;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class ChannelData {
@@ -20,7 +20,7 @@ public class ChannelData {
 
     /**
      * Constructor to initialize and fetch channel information and recent videos
-     *
+     * @author Thansil Syed
      * @param youtube   YouTube service instance
      * @param channelId Channel ID to fetch details for
      * @param apiKey    YouTube API key
@@ -31,6 +31,15 @@ public class ChannelData {
         fetchRecentVideos(youtube, channelId, apiKey);
     }
 
+
+    /**
+     * Constructor to initialize and fetch channel information and recent videos
+     * @author Thansil Syed
+     * @param youtube   YouTube service instance
+     * @param channelId Channel ID to fetch details for
+     * @param apiKey    YouTube API key
+     * @throws IOException in case of a network or API error
+     */
     private void fetchChannelData(YouTube youtube, String channelId, String apiKey) throws IOException {
         // API call to get channel details
         YouTube.Channels.List request = youtube.channels().list(Arrays.asList("snippet", "statistics"));
@@ -54,6 +63,15 @@ public class ChannelData {
         System.out.println(this.thumbnailUrl);
     }
 
+
+    /**
+     * Constructor to initialize and fetch channel information and recent videos
+     * @author Thansil Syed
+     * @param youtube   YouTube service instance
+     * @param channelId Channel ID to fetch details for
+     * @param apiKey    YouTube API key
+     * @throws IOException in case of a network or API error
+     */
     private void fetchRecentVideos(YouTube youtube, String channelId, String apiKey) throws IOException {
         // API call to get channel's recent videos
         YouTube.PlaylistItems.List request = youtube.playlistItems().list(List.of("snippet"));
@@ -77,23 +95,37 @@ public class ChannelData {
         System.out.println(this.recentVideos);
     }
 
-    // Getters
+    /**
+     * @return the title of the channel
+     * */
     public String getChannelTitle() {
         return channelTitle;
     }
 
+    /**
+     * @return the description of the channel
+     * */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * @return the subscriber count of the
+     * */
     public String getSubscriberCount() {
         return subscriberCount;
     }
 
+    /**
+     * @return the thumbnail of the url
+     * */
     public String getThumbnailUrl() {
         return thumbnailUrl;
     }
 
+    /**
+     * @return the details of the list of recent videos
+     * */
     public List<List<String>> getRecentVideos() {
         return recentVideos;
     }

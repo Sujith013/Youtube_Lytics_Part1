@@ -20,8 +20,10 @@ public class SearchData {
 
 
     /**
+     * @author Sujith Manikandan
      * @author Tharun Balaji
      * @author Thansil Mohammed Syed Hamdulla
+     * @author Prakash Yuvaraj
      * @param query the search query/keyword to be searched with to get relevant results
      * @param youtube the official YouTube api object
      * @param api_key the official api key used to connect to the client
@@ -71,42 +73,15 @@ public class SearchData {
     }
 
 
+
+
+
+
     /**
      * @author Sujith Manikandan
-     * @param videoId the id of the video
-     * @param tag the tag to be matched with
-     * @param API_KEY the api key to fetch the data
-     * @throws NullPointerException when no tags are present in the video
-     * @return a boolean value to determine whether the given tag is present in the video or not
-     * */
-    public static boolean checkTagPresent(String videoId,String tag,String API_KEY) throws NullPointerException
-    {
-        try{
-            //Get the official YouTube api object created
-            YouTube youtube = YoutubeService.getService();
-
-            TagsData videos = new TagsData(youtube,videoId,API_KEY);
-
-            String[] tags = videos.getTagsResponse().split("\\+");
-
-                for (String p : tags)
-                    if (p.equals(tag))
-                        return true;
-
-            return false;
-        }
-        catch (IOException | GeneralSecurityException | NullPointerException e)
-        {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-
-    /**
      * @author Tharun Balaji
-     * @author Sujith Manikandan
      * @author Thansil Mohammed Syed Hamdulla
+     * @author Prakash Yuvaraj
      * @param query the search query/keyword to be searched with to get relevant results
      * @param youtube the official YouTube api object
      * @param api_key the official api key used to connect to the client
@@ -156,10 +131,51 @@ public class SearchData {
         this.word_stats = this.calculateWordStats();
     }
 
+
+
+
+
+    /**
+     * @author Sujith Manikandan
+     * @param videoId the id of the video
+     * @param tag the tag to be matched with
+     * @param API_KEY the api key to fetch the data
+     * @throws NullPointerException when no tags are present in the video
+     * @return a boolean value to determine whether the given tag is present in the video or not
+     * */
+    public static boolean checkTagPresent(String videoId,String tag,String API_KEY) throws NullPointerException
+    {
+        try{
+            //Get the official YouTube api object created
+            YouTube youtube = YoutubeService.getService();
+
+            TagsData videos = new TagsData(youtube,videoId,API_KEY);
+
+            String[] tags = videos.getTagsResponse().split("\\+");
+
+            for (String p : tags)
+                if (p.equals(tag))
+                    return true;
+
+            return false;
+        }
+        catch (IOException | GeneralSecurityException | NullPointerException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+
+
+
+
     /**
      * Method to calculate word frequency statistics from video descriptions.
-     *
-     * @return A map of word frequencies
+     * @author Tharun Balaji
+     * @return A linked hash map of word frequencies
      */
     private LinkedHashMap<String, Long> calculateWordStats() {
         Map<String,Long> partial_result = this.videos.stream()
@@ -182,10 +198,12 @@ public class SearchData {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
 
-        System.out.println(entryList);
-
         return sortedMap;
     }
+
+
+
+
 
 
     /**
@@ -389,6 +407,9 @@ public class SearchData {
             return ":-|"; // Neutral
         }
     }
+
+
+
 
 
     /**

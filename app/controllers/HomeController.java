@@ -20,10 +20,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CompletableFuture;
 import java.security.GeneralSecurityException;
@@ -45,6 +45,9 @@ public class HomeController extends Controller {
 
     /**
      * @author Sujith Manikandan
+     * @author Tharun Balaji
+     * @author Thansil Mohamed Syed Hamdulla
+     * @author Prakash Yuvaraj
      * @return returns the view of the index page containing the html content for the main page of our application
      * */
     public Result index() {
@@ -55,8 +58,10 @@ public class HomeController extends Controller {
 
 
     /**
+     * @author Sujith Manikandan
      * @author Tharun Balaji
-     * @author Thansil Mohammed Syed Hamdulla
+     * @author Thansil Mohamed Syed Hamdulla
+     * @author Prakash Yuvaraj
      * @param request The http request sent through the fetch API from the client side using javascript for the submission of the search field
      * @return A wrapped object containing all the data about the search results such as videoID,videoTitle,ChannelTitle,ChannelId,description and url of the thumbnail
      * */
@@ -135,8 +140,6 @@ public class HomeController extends Controller {
      }
 
 
-
-
      /**
       * @author Sujith Manikandan
       * @param request The http request sent through the fetch API from the client side using javascript for the submission of the search field
@@ -176,6 +179,9 @@ public class HomeController extends Controller {
        });
      }
 
+
+
+
     /**
      * @author Thansil Mohammed Syed Hamdulla
      * Method to handle requests for displaying the channel profile page.
@@ -192,7 +198,7 @@ public class HomeController extends Controller {
                 ChannelData channelData = new ChannelData(youtube, channelId, API_KEY);
 
                 // Render the channel profile page with channel details and recent videos
-                return ok(views.html.ChannelData.render(
+                return ok(views.html.channel.render(
                         channelData.getChannelTitle(),
                         channelData.getDescription(),
                         channelData.getSubscriberCount(),
@@ -207,11 +213,17 @@ public class HomeController extends Controller {
     }
 
 
+
+
+    /**
+     * @author Tharun Balaji
+     * @param searchNumber the search query number
+     * @return the rendering of the word stats web page*/
     public CompletionStage<Result> wordStats(String searchNumber) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 // Render the channel profile page with channel details and recent videos
-                return ok(views.html.StatsData.render(
+                return ok(views.html.stats.render(
                     videos.getWordStats()
                 ));
             } catch (Exception e) {

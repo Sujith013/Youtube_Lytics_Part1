@@ -28,7 +28,7 @@ function printOutput(data,sentiment,searchParams,stats_number)
     const sR = document.getElementById('searchResults');
 
     var newHead = document.createElement("p");
-    var headVal = "<b><u>Search Terms</u>:</b> "+searchParams.toString().split("=")[1].replaceAll("+"," ")+"  "+sentiment+"<a target=\"_blank\" href=\"/wordStats/"+stats_number+"\">&nbsp&nbsp&nbsp&nbsp&nbspWord_Stats</a>";
+    var headVal = "<b><u>Search Terms</u>:</b> "+searchParams.toString().split("=")[1].replaceAll("+"," ")+"  "+sentiment+"<a target=\"_blank\" href=\"/wordStats/"+stats_number+"\">Word_Stats</a>";
     newHead.innerHTML = headVal;
     newHead.classList.add("list_1");
 
