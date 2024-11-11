@@ -9,12 +9,27 @@ import static org.junit.Assert.*;
 
 public class YoutubeServiceTest {
 
+    /**
+     * Checks if the YouTube service object is not null
+     * @author Sujith Manikandan
+     * @author Tharun Balaji
+     * @author Thansil Mohamed Syed Hamdulla
+     * @author Prakash Yuvaraj
+     * @throws IOException related to api and network issues*/
     @Test
     public void testGetServiceReturnsNonNull() throws GeneralSecurityException, IOException {
         YouTube service = YoutubeService.getService();
         assertNotNull("The YouTube service instance should not be null", service);
     }
 
+
+    /**
+     * Checks if the YouTube service object creation returns the same instance every time
+     * @author Sujith Manikandan
+     * @author Tharun Balaji
+     * @author Thansil Mohamed Syed Hamdulla
+     * @author Prakash Yuvaraj
+     * @throws IOException related to api and network issues*/
     @Test
     public void testGetServiceIsSame() throws GeneralSecurityException, IOException {
         YouTube service1 = YoutubeService.getService();

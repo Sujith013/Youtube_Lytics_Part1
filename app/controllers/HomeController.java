@@ -39,7 +39,7 @@ import com.google.api.services.youtube.YouTube;
 public class HomeController extends Controller {
 
     //The api key
-    private static final String API_KEY = "AIzaSyDycQNgX1KuZSCibwXdsyxpDdRfb0rr6FI";
+    private static final String API_KEY = "AIzaSyAW0T6vizZ9wEgix9jH8WzVIaw_TVe1mak";
     private static YouTube youtube;
     private static SearchData videos;
 
@@ -95,7 +95,7 @@ public class HomeController extends Controller {
                  descriptions.add(s.get(3));
              }
 
-             String sentiment = SearchData.getSentimentAnalysis(descriptions);
+             String sentiment = videos.getSentimentAnalysis(descriptions);
 
              Map<String, Object> response = new HashMap<>();
              response.put("data", videos.getVideos());

@@ -45,13 +45,17 @@ public class TagsDataTest {
     private Thumbnail mockThumbnail;
 
     String VIDEO_ID = "HrCbXNRP7eg";
-    String API_KEY = "AIzaSyAugi0_hJ_OgciWZoKLnYybGcZlq4CLJiw";
+    String API_KEY = "AIzaSyDycQNgX1KuZSCibwXdsyxpDdRfb0rr6FI";
     String VIDEO_TITLE = "The Problem With Being \"Too Nice\" at Work | Tessa West | TED\n";
     String CHANNEL_TITLE = "TED";
     String DESCRIPTION = "Are you \"too nice\" at work? Social psychologist Tessa West shares her research on how people attempt to mask anxiety with overly polite feedback — a practice that's more harmful than helpful — and gives three tips to swap generic, unhelpful observations with clear, consistent feedback, even when you feel awkward. If you love watching TED Talks like this one, become a TED Member to support our mission of spreading ideas: https://ted.com/membership Follow TED! X: https://twitter.com/TEDTalks Instagram: https://www.instagram.com/ted Facebook: https://facebook.com/TED LinkedIn: https://www.linkedin.com/company/ted-conferences TikTok: https://www.tiktok.com/@tedtoks The TED Talks channel features talks, performances and original series from the world's leading thinkers and doers. Subscribe to our channel for videos on Technology, Entertainment and Design — plus science, business, global issues, the arts and more. Visit https://TED.com to get our entire library of TED Talks, transcripts, translations, personalized talk recommendations and more. Watch more: https://go.ted.com/tessawest https://youtu.be/HrCbXNRP7eg TED's videos may be used for non-commercial purposes under a Creative Commons License, Attribution–Non Commercial–No Derivatives (or the CC BY – NC – ND 4.0 International) and in accordance with our TED Talks Usage Policy: https://www.ted.com/about/our-organization/our-policies-terms/ted-talks-usage-policy. For more information on using TED for commercial purposes (e.g. employee learning, in a film or online course), please submit a Media Request at https://media-requests.ted.com #TED #TEDTalks #work";
     String THUMBNAIL_URL = "https://i.ytimg.com/vi/HrCbXNRP7eg/hqdefault.jpg";
     List<String> TAGS = List.of("Ted", "Ted Talks", "TedTalk");
 
+    /**
+     * The setUp to assign all the mock responses for the classes.
+     * @author Sujith Manikandan
+     * @throws IOException in case of a network or API error */
     @Before
     public void setUp() throws IOException {
         // Mock the main YouTube object and its nested classes
@@ -86,6 +90,10 @@ public class TagsDataTest {
     }
 
 
+    /**
+     * The main test function with various test cases to check for the tags data
+     * @author Sujith Manikandan
+     * @throws IOException in case of a network or API error */
     @Test
     public void testVideoDataGrabbing() throws IOException {
         // API key testing

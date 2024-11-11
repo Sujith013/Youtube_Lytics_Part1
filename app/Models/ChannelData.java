@@ -34,7 +34,7 @@ public class ChannelData {
 
     /**
      * Constructor to initialize and fetch channel information and recent videos
-     * @author Thansil Syed
+     * @author Thansil Mohammed Syed Hamdulla
      * @param youtube   YouTube service instance
      * @param channelId Channel ID to fetch details for
      * @param apiKey    YouTube API key

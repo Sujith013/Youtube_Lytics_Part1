@@ -60,12 +60,16 @@ public class TagsData {
 
         List<String> tagsResponseList = response.getItems().get(0).getSnippet().getTags();
 
+
         this.videoTitle = response.getItems().get(0).getSnippet().getTitle();
         this.channelTitle = response.getItems().get(0).getSnippet().getChannelTitle();
         this.description = response.getItems().get(0).getSnippet().getDescription();
         this.thumbnail = response.getItems().get(0).getSnippet().getThumbnails().getHigh().getUrl();
 
-        this.tagsResponse = String.join("+", tagsResponseList);
+        if(tagsResponseList != null)
+            this.tagsResponse = String.join("+", tagsResponseList);
+        else
+            this.tagsResponse = "";
     }
 
     /**

@@ -27,6 +27,14 @@ public class HomeControllerTest extends WithApplication {
         return new GuiceApplicationBuilder().build();
     }
 
+
+    /**
+     * checks whether the main page (index) is properly rendered with a success result status
+     * @author Sujith Manikandan
+     * @author Tharun Balaji
+     * @author Thansil Mohamed Syed Hamdulla
+     * @author Prakash Yuvaraj
+     * */
     @Test
     public void testIndex() {
         Http.RequestBuilder request = new Http.RequestBuilder()
@@ -37,6 +45,14 @@ public class HomeControllerTest extends WithApplication {
         assertEquals(OK, result.status());
     }
 
+
+    /**
+     * The setup function to specify the mock response (search term) for the http request coming from the client page during search
+     * @author Sujith Manikandan
+     * @author Tharun Balaji
+     * @author Thansil Mohamed Syed Hamdulla
+     * @author Prakash Yuvaraj
+     * */
     @Before
     public void setUp()
     {
@@ -44,6 +60,14 @@ public class HomeControllerTest extends WithApplication {
         when(mockRequest.getQueryString("searchTerms")).thenReturn(SEARCH_TERM);
     }
 
+
+    /**
+     * The function with test cases for the submit input function
+     * @author Sujith Manikandan
+     * @author Tharun Balaji
+     * @author Thansil Mohamed Syed Hamdulla
+     * @author Prakash Yuvaraj
+     * */
     @Test
     public void testSubmitInputQuery() throws Exception
     {
@@ -97,6 +121,11 @@ public class HomeControllerTest extends WithApplication {
     }
 
 
+
+    /**
+     * The function with test cases for the tag queries (the tag index function and the tagResult index function in the HomeController)
+     * @author Sujith Manikandan
+     * */
     @Test
     public void tagQuery() throws Exception
     {

@@ -20,7 +20,14 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "org.mockito" % "mockito-core" % "5.11.0" % Test,
   "junit" % "junit" % "4.13.2" % Test,
-  "org.scalatest" %% "scalatest" % "3.2.19" % Test
+  "org.scalatest" %% "scalatest" % "3.2.19" % Test,
+  "org.powermock" % "powermock-api-mockito2" % "2.0.9" % Test,
+  "org.powermock" % "powermock-module-junit4" % "2.0.9" % Test,
+)
+
+jacocoExcludes := Seq(
+  "views.*",          // Exclude all classes in the `views` package
+  "controllers.routes.*", // Example: Exclude Play auto-generated routes file
 )
 
 
