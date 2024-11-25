@@ -51,4 +51,30 @@ function printOutput(data,sentiment,searchParams,stats_number)
         sR.insertBefore(newHead, sR.firstChild); // Insert before the first child
     else
         sR.appendChild(newHead);
+
+    var count = 0;
+    var index = 0;
+
+    for(var i=0;i<sR.children.length;i++)
+    {
+      if(sR.children[i].tagName=="P")
+        count += 1;
+
+      if(count==11)
+      {
+         index=i;
+         break;
+      }
+    }
+
+    console.log(count+" "+index);
+    console.log(sR.children.length);
+
+    if(count==11)
+    {
+    while(sR.children.length!=index)
+        sR.removeChild(sR.children[sR.children.length-1])
+    }
+
+            console.log(sR.children.length);
 }

@@ -67,41 +67,10 @@ public class HomeController extends Controller {
      * */
     public CompletionStage<Result> submitInput(Http.Request request) {
      return CompletableFuture.supplyAsync(() -> {
-         boolean f = false;
-         String sT = request.getQueryString("searchTerms");
-
          try
          {
-             for(int i=0;i<sT.length();i++)
-                 if(Character.isLetterOrDigit(sT.charAt(i)))
-                     f = true;
-
-             if(!f)
-                 throw new IllegalArgumentException();
-
-             //encode the query with proper delimiters to avoid the errors with spaces.
-             sT = URLEncoder.encode(sT, "UTF-8");
-
-             //get the YouTube service object
-             youtube = YoutubeService.getService();
-
-             //Maps the list of a list of string and returns it back to the client side JS.
-             ObjectMapper objectMapper = new ObjectMapper();
-             videos = new SearchData(youtube,sT,API_KEY);
-
-             ArrayList<String> descriptions = new ArrayList<String>();
-
-             for(List<String> s : videos.getVideos()){
-                 descriptions.add(s.get(3));
-             }
-
-             String sentiment = videos.getSentimentAnalysis(descriptions);
-
-             Map<String, Object> response = new HashMap<>();
-             response.put("data", videos.getVideos());
-             response.put("senti", sentiment);
-
-             return ok(objectMapper.writeValueAsString(response));
+             videos = new SearchData(YoutubeService.getService(),request.getQueryString("searchTerms"),API_KEY);
+             return ok(new ObjectMapper().writeValueAsString(videos.getResponse()));
          }
          catch (IOException | GeneralSecurityException | IllegalStateException e)
          {
@@ -123,13 +92,8 @@ public class HomeController extends Controller {
      return CompletableFuture.supplyAsync(() -> {
 
          try{
-             //Get the official YouTube api object created
-             youtube = YoutubeService.getService();
-
-             TagsData videos = new TagsData(youtube,videoId,API_KEY);
-
-             //Returns all the information obtained about the video using the id back to the client side JS.
-             return ok(views.html.tags.render(videoId,videos.getVideoTitle(),videos.getChannelTitle(),videos.getDescription(),videos.getThumbnail(),videos.getTagsResponse()));
+             TagsData videos = new TagsData(YoutubeService.getService(),videoId,API_KEY);
+             return ok(views.html.tags.render(videoId,videos.getVideoTitle(),videos.getChannelTitle(),videos.getDescription(),videos.getThumbnail(),videos.getTagsResponse(),videos.getChannelId()));
          }
          catch (IOException | GeneralSecurityException e)
          {
@@ -147,29 +111,9 @@ public class HomeController extends Controller {
       * */
      public CompletionStage<Result> tagResultIndex(Http.Request request) {
      return CompletableFuture.supplyAsync(() -> {
-         boolean f = false;
-         String sT = request.getQueryString("searchTerm");
-
          try
          {
-             for(int i=0;i<sT.length();i++)
-                 if(Character.isLetterOrDigit(sT.charAt(i)))
-                     f = true;
-
-             if(!f)
-                 throw new IllegalArgumentException();
-
-             //encode the query with proper delimiters to avoid the errors with spaces.
-             sT = URLEncoder.encode(sT, "UTF-8");
-
-             //get the YouTube service object
-             youtube = YoutubeService.getService();
-
-             //Maps the list of a list of string and returns it back to the client side JS.
-             ObjectMapper objectMapper = new ObjectMapper();
-             SearchData videos = new SearchData(youtube,sT,API_KEY,true);
-
-             return ok(objectMapper.writeValueAsString(videos.getVideos()));
+             return ok(new ObjectMapper().writeValueAsString(new SearchData(YoutubeService.getService(), request.getQueryString("searchTerm"),API_KEY,true).getVideos()));
          }
          catch (IOException | GeneralSecurityException e)
          {
@@ -191,13 +135,8 @@ public class HomeController extends Controller {
     public CompletionStage<Result> channelProfile(String channelId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                // Initialize YouTube service if not already initialized
-                youtube = YoutubeService.getService();
+                ChannelData channelData = new ChannelData(YoutubeService.getService(), channelId, API_KEY);
 
-                // Fetch the channel data using the ChannelData model
-                ChannelData channelData = new ChannelData(youtube, channelId, API_KEY);
-
-                // Render the channel profile page with channel details and recent videos
                 return ok(views.html.channel.render(
                         channelData.getChannelTitle(),
                         channelData.getDescription(),

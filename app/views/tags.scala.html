@@ -4,7 +4,8 @@
   channelTitle: String,
   description: String,
   thumbnail: String,
-  tagsResponse: String)
+  tagsResponse: String,
+   channelId: String)
 
 <html lang="en">
 <head>
@@ -16,7 +17,7 @@
 <div class="list_2" style="margin-top:100px">
       <p class="paraTag">
             <b>Title:</b><a target="_blank" href="https://www.youtube.com/watch?v=@videoId">@videoTitle</a><br><br>
-            <b>Channel:</b><a target="_blank" href="https://www.youtube.com/\@@channelTitle">@channelTitle</a><br><br>
+            <b>Channel:</b><a target="_blank" href="https://www.youtube.com/channel/@channelId">@channelTitle</a><br><br>
             <b>Description:</b>@description<br><br>
       </p><br><br>
       <img alt="thumbnail" src="@thumbnail" width="500px" height="300px" class="thumbnail1">

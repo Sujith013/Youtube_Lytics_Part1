@@ -12,7 +12,7 @@ import com.google.api.services.youtube.model.VideoListResponse;
  * The java class containing the attributes and methods for the video data to be obtained and stored using the YouTube API
  * */
 public class TagsData {
-    final private String videoTitle,channelTitle,description,thumbnail,tagsResponse;
+    final private String videoTitle,channelTitle,description,thumbnail,tagsResponse,channelId;
 
     /**
      * @author Sujith Manikandan
@@ -63,6 +63,7 @@ public class TagsData {
 
         this.videoTitle = response.getItems().get(0).getSnippet().getTitle();
         this.channelTitle = response.getItems().get(0).getSnippet().getChannelTitle();
+        this.channelId = response.getItems().get(0).getSnippet().getChannelId();
         this.description = response.getItems().get(0).getSnippet().getDescription();
         this.thumbnail = response.getItems().get(0).getSnippet().getThumbnails().getHigh().getUrl();
 
@@ -91,6 +92,13 @@ public class TagsData {
      * */
     public String getChannelTitle(){
         return this.channelTitle;
+    }
+
+    /**
+     * @return the id of the channel
+     * */
+    public String getChannelId(){
+        return this.channelId;
     }
 
     /**

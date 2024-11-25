@@ -1,5 +1,6 @@
 package Models;
 
+import java.net.URLEncoder;
 import java.util.*;
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ import com.google.api.services.youtube.model.SearchListResponse;
 public class SearchData {
     private final List<List<String>> videos;
     private final LinkedHashMap<String, Long> word_stats; // Word frequency map
-
+    private final  HashMap<String, Object> response = new HashMap<>();
     // Initialize counters
     private int happyCount = 0;
     private int sadCount = 0;
@@ -195,6 +196,9 @@ public class SearchData {
      * @throws IOException due to network or I/O issues such as connectivity issues
      * */
     public SearchData(YouTube youtube, String query,String api_key) throws IOException {
+        //encode the query with proper delimiters to avoid the errors with spaces.
+        query = URLEncoder.encode(query, "UTF-8");
+
         if(api_key.isEmpty())
             throw new NullPointerException();
         else if(api_key.length()<39)
@@ -233,6 +237,17 @@ public class SearchData {
                 .limit(10)
                 .collect(Collectors.toList());
 
+        ArrayList<String> descriptions = new ArrayList<String>();
+
+        for(List<String> s : this.getVideos()){
+            descriptions.add(s.get(3));
+        }
+
+        String sentiment = this.getSentimentAnalysis(descriptions);
+
+        this.response.put("data", this.getVideos());
+        this.response.put("senti", sentiment);
+
         // Calculate word statistics
         this.word_stats = this.calculateWordStats();
     }
@@ -254,6 +269,7 @@ public class SearchData {
      * @throws IOException due to network or I/O issues such as connectivity issues
      * */
     public SearchData(YouTube youtube, String query,String api_key,boolean tag) throws IOException {
+
         if(api_key.isEmpty())
             throw new NullPointerException();
         else if(api_key.length()<39)
@@ -492,5 +508,10 @@ public class SearchData {
      */
     public List<String> getSadEmoticons() {
         return this.sadEmoticons;
+    }
+
+    public HashMap<String,Object> getResponse()
+    {
+        return this.response;
     }
 }
